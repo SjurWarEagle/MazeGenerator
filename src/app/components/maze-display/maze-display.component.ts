@@ -9,7 +9,7 @@ import {maxBy, minBy} from "lodash";
   styleUrls: ['./maze-display.component.scss']
 })
 export class MazeDisplayComponent implements AfterViewInit {
-  private cellWidth = 32;
+  public cellWidth = 32;
 
   @Input()
   set maze(maze: Maze) {
