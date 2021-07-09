@@ -9,12 +9,14 @@ import {maxBy, minBy} from "lodash";
   styleUrls: ['./maze-display.component.scss']
 })
 export class MazeDisplayComponent implements AfterViewInit {
-  public cellWidth = 32;
+  // public cellWidth = 32;
+  public cellWidth = 16;
   private COLOR_BEGIN = 'red';
   private COLOR_LOOT = 'orange';
   private COLOR_FINISH = 'lightgreen';
   private COLOR_SOLUTION = 'lightblue';
   private COLOR_OTHER = 'brown';
+  private COLOR_BACKGROUND = 'darkgray';
   private COLOR_NORMAL = 'white';
   // private COLOR_NORMAL = 'lightgray';
 
@@ -91,7 +93,10 @@ export class MazeDisplayComponent implements AfterViewInit {
       ctx.fillStyle = this.COLOR_SOLUTION;
     } else if (cell.visited) {
       ctx.fillStyle = this.COLOR_NORMAL;
+    } else if (cell.background) {
+      ctx.fillStyle = this.COLOR_BACKGROUND;
     } else {
+      // console.log('cell',cell);
       ctx.fillStyle = this.COLOR_OTHER;
     }
     ctx.fillRect(cell.x * this.cellWidth, cell.y * this.cellWidth, this.cellWidth, this.cellWidth);
@@ -113,8 +118,6 @@ export class MazeDisplayComponent implements AfterViewInit {
 
   // @ts-ignore
   public ngAfterViewInit(): void {
-    // const mazeSize = this.mazeArea.nativeElement.getBoundingClientRect();
-    // this.cellWidth = Math.floor(Math.min(mazeSize.width, mazeSize.height) / Math.sqrt(this.maze.cells.length));
     this.drawMaze();
 
   }

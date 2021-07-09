@@ -2,33 +2,85 @@ import {Injectable} from '@angular/core';
 import {MazeCell} from '../types/maze-cell';
 import {MazeHelperService} from './maze-helper.service';
 import {Maze} from '../types/maze';
-import {MazeLoot} from '../types/maze-loot';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MazeGeneratorService {
+export class MazeGeneratorFormsService {
   private cellStack: MazeCell[] = [];
 
   constructor(private mazeHelperService: MazeHelperService) {
   }
 
-  public generateMaze(width: number, height: number): Maze {
+  public generateMaze(form: string[][]): Maze {
     const maze: Maze = new Maze();
+    form = this.scaleUpForm(form, 2);
+    this.mazeHelperService.initEmptyMazeArea(maze, form);
+    const width = this.mazeHelperService.getWidthOfForm(form);
+    const height = this.mazeHelperService.getHeightOfForm(form);
+    this.fillBegin(form, maze);
+    this.fillFinish(form, maze);
 
-    this.mazeHelperService.initEmptySquareMazeArea(maze, width, height);
-    maze.finish = maze.cells.find(value => value.x === width - 1 && value.y === height - 1)!;
+    const currentCell = maze.begin;
+    this.cellStack.push(currentCell);
+
+    this.walkMaze(maze, width, height);
+    return maze;
+  }
+
+  private scaleUpForm(form: string[][], scale: number): string[][] {
+    const rc: string[][] = [];
+
+    for (let y = 0; y < form.length; y++) {
+      const orgRow = form[y];
+      let rows = [];
+      for (let i = 0; i < scale; i++) {
+        rows.push([]);
+      }
+
+      for (let c = 0; c < scale; c++) {
+        for (let x = 0; x < orgRow.length; x++) {
+          const currentField = orgRow[x];
+          if (currentField === 'B') {
+            rows[c].push('B');
+            for (let c2 = 0; c2 < scale - 1; c2++) {
+              rows[c].push('#');
+            }
+          } else if (currentField === 'F') {
+            rows[c].push('F');
+            for (let c2 = 0; c2 < scale - 1; c2++) {
+              rows[c].push('#');
+            }
+          } else {
+            for (let c2 = 0; c2 < scale; c2++) {
+              rows[c].push(currentField);
+            }
+          }
+        }
+      }
+
+      for (let i = 0; i < scale; i++) {
+        rc.push(rows[i]);
+      }
+    }
+
+    return rc;
+  }
+
+  private fillBegin(form: string[][], maze: Maze) {
+    const begin = this.mazeHelperService.getBegin(form);
+    maze.begin = new MazeCell(begin.x, begin.y);
+    if (!maze.begin) {
+      throw new Error('no finish point found');
+    }
+  }
+
+  private fillFinish(form: string[][], maze: Maze) {
+    const finish = this.mazeHelperService.getFinish(form);
+    maze.finish = new MazeCell(finish.x, finish.y);
     if (!maze.finish) {
       throw new Error('no finish point found');
     }
-    const currentCell: MazeCell | undefined = maze.cells.find(value => value.x === maze.begin.x && value.y === maze.begin.y);
-    if (!currentCell) {
-      throw new Error('no starting point found');
-    }
-
-    this.cellStack.push(currentCell);
-    this.walkMaze(maze, width, height);
-    return maze;
   }
 
   private storeWayToExit(maze: Maze, currentCell: MazeCell): void {
@@ -47,7 +99,10 @@ export class MazeGeneratorService {
     while (this.cellStack.length !== 0) {
       const currentCell = this.cellStack.pop()!;
       this.storeWayToExit(maze, currentCell);
+      // console.log('width',width );
+      // console.log('height',height );
       const selectedTarget = this.getRandomNeighbour(currentCell, maze, width, height);
+      // console.log('selectedTarget',selectedTarget );
 
       if (selectedTarget) {
         this.cellStack.push(currentCell);
@@ -65,6 +120,8 @@ export class MazeGeneratorService {
 
   private getRandomNeighbour(currentCell: MazeCell, maze: Maze, width: number, height: number): MazeCell {
     const directions = this.mazeHelperService.findPossibleDirections(currentCell, maze, width, height);
+    // console.log('currentCell',currentCell);
+    // console.log('directions',directions);
 
     const rnd = Math.floor(Math.random() * directions.length);
     return directions[rnd];
@@ -90,29 +147,4 @@ export class MazeGeneratorService {
     }
   }
 
-  distributeLoot(maze: Maze, cnt: number, sideLengthMaze: number): void {
-    let emergency = 100_000;
-    for (let i = 0; i < cnt; i++) {
-      const lootX = Math.floor(Math.random() * sideLengthMaze);
-      const lootY = Math.floor(Math.random() * sideLengthMaze);
-      const loot = new MazeLoot(lootX, lootY);
-
-      const alreadyExists = maze.loot.find(cell => cell.x === loot.x && cell.y === loot.y);
-      const tooCloseToOtherLoot = maze.loot.find(cell => Math.abs(cell.x - loot.x) + Math.abs(cell.y - loot.y) < sideLengthMaze);
-      const isPartOfIdealPath = maze.wayToExit.find(cell => cell.x === loot.x && cell.y === loot.y);
-      const isSpecialField = (maze.finish.x === loot.x && maze.finish.y === loot.y)
-        || (maze.begin.x === loot.x && maze.begin.y === loot.y);
-      if (!alreadyExists && !isPartOfIdealPath && !tooCloseToOtherLoot && !isSpecialField) {
-        maze.loot.push(loot);
-      } else {
-        i--;
-      }
-      emergency--;
-      if (emergency <= 0) {
-        console.log('Loot-Loop too long!');
-        break;
-      }
-
-    }
-  }
 }
