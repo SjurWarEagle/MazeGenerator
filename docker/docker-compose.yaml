@@ -1,0 +1,12 @@
+version: '3.3'
+
+services:
+  kokon:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ../nginx/exp.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - 92:92
+    restart: unless-stopped

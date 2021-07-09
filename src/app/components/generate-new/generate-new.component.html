@@ -1,0 +1,24 @@
+<mat-form-field class="example-form-field" appearance="fill">
+  <mat-label>Height</mat-label>
+  <input matInput type="number" [(ngModel)]="height">
+</mat-form-field>
+x
+<mat-form-field class="example-form-field" appearance="fill">
+  <mat-label>Width</mat-label>
+  <input matInput type="number" [(ngModel)]="width">
+</mat-form-field>
+
+<mat-checkbox [(ngModel)]="showSolution">show solution</mat-checkbox>
+
+<hr>
+
+<button id="basic" type="button" mat-button (click)="startGenerate()">
+  Generate
+</button>
+<hr>
+
+<app-maze-display
+  *ngIf="this.dataHolderService.maze"
+  [maze]="dataHolderService.maze"
+  [showSolution]="showSolution"
+></app-maze-display>
