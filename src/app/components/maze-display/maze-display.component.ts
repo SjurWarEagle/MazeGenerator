@@ -10,6 +10,13 @@ import {maxBy, minBy} from "lodash";
 })
 export class MazeDisplayComponent implements AfterViewInit {
   public cellWidth = 32;
+  private COLOR_BEGIN = 'red';
+  private COLOR_LOOT = 'orange';
+  private COLOR_FINISH = 'lightgreen';
+  private COLOR_SOLUTION = 'lightblue';
+  private COLOR_OTHER = 'brown';
+  private COLOR_NORMAL = 'white';
+  // private COLOR_NORMAL = 'lightgray';
 
   @Input()
   set maze(maze: Maze) {
@@ -75,17 +82,17 @@ export class MazeDisplayComponent implements AfterViewInit {
     const isLoot = this.localMaze.loot.find(pos => cell.x === pos.x && cell.y === pos.y) !== undefined;
 
     if (isFinish) {
-      ctx.fillStyle = 'lightgreen';
+      ctx.fillStyle = this.COLOR_FINISH;
     } else if (isLoot) {
-      ctx.fillStyle = 'orange';
+      ctx.fillStyle = this.COLOR_LOOT;
     } else if (isBegin) {
-      ctx.fillStyle = 'red';
+      ctx.fillStyle = this.COLOR_BEGIN;
     } else if (isPartOfWayToExit && this.localShowSolution) {
-      ctx.fillStyle = 'lightblue';
+      ctx.fillStyle = this.COLOR_SOLUTION;
     } else if (cell.visited) {
-      ctx.fillStyle = 'lightgray';
+      ctx.fillStyle = this.COLOR_NORMAL;
     } else {
-      ctx.fillStyle = 'brown';
+      ctx.fillStyle = this.COLOR_OTHER;
     }
     ctx.fillRect(cell.x * this.cellWidth, cell.y * this.cellWidth, this.cellWidth, this.cellWidth);
   }
