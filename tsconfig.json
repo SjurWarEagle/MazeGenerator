@@ -15,6 +15,13 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    //"fix": "https://github.com/pixijs/pixijs/issues/7305",
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "mini-signals": [
+        "node_modules/mini-signals/index.js"
+      ]
+    }
   }
 }

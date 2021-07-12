@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Input, NgZone, OnInit} from '@angular/core';
+import {Component, ElementRef, Input, NgZone, OnInit} from '@angular/core';
 import {MazeCell} from '../../../types/maze-cell';
 import {Maze} from '../../../types/maze';
 import {maxBy, minBy} from "lodash";
@@ -9,7 +9,7 @@ import {Application, Graphics} from 'pixi.js';
   templateUrl: './maze-display.component.html',
   styleUrls: ['./maze-display.component.scss']
 })
-export class MazeDisplayComponent implements OnInit, AfterViewInit {
+export class MazeDisplayComponent implements OnInit {
   public app: Application;
 
   public cellWidth = 16;
@@ -20,8 +20,6 @@ export class MazeDisplayComponent implements OnInit, AfterViewInit {
   private COLOR_OTHER = 0xFF5522;
   private COLOR_BACKGROUND = 0xAAAAAA;
   private COLOR_NORMAL = 0xFFFFFF;
-
-  // private COLOR_NORMAL = 'lightgray';
 
   @Input()
   set maze(maze: Maze) {
@@ -48,9 +46,6 @@ export class MazeDisplayComponent implements OnInit, AfterViewInit {
   }
 
   public localShowSolution = true;
-
-  // @ts-ignore
-  public context: CanvasRenderingContext2D | null;
 
   constructor(private elementRef: ElementRef, private ngZone: NgZone) {
   }
@@ -120,12 +115,8 @@ export class MazeDisplayComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.ngZone.runOutsideAngular(() => {
       this.elementRef.nativeElement.appendChild(this.app.view);
+      this.drawMaze();
     });
   }
 
-  ngAfterViewInit(): void {
-    setTimeout(()=>{
-      this.drawMaze();
-    })
-  }
 }
