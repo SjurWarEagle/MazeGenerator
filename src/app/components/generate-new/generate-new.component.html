@@ -1,21 +1,29 @@
-<mat-form-field class="example-form-field" appearance="fill">
-  <mat-label>Height</mat-label>
-  <input matInput type="number" [(ngModel)]="height">
-</mat-form-field>
-x
-<mat-form-field class="example-form-field" appearance="fill">
-  <mat-label>Width</mat-label>
-  <input matInput type="number" [(ngModel)]="width">
-</mat-form-field>
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <mat-icon>image_aspect_ratio</mat-icon>
+      Labyrinth als Rechteck
+    </mat-panel-title>
+  </mat-expansion-panel-header>
 
+  <mat-form-field class="example-form-field" appearance="fill">
+    <mat-label>Height</mat-label>
+    <input matInput type="number" [(ngModel)]="height">
+  </mat-form-field>
+  x
+  <mat-form-field class="example-form-field" appearance="fill">
+    <mat-label>Width</mat-label>
+    <input matInput type="number" [(ngModel)]="width">
+  </mat-form-field>
+
+
+  <button id="basic" type="button" mat-button (click)="startGenerate()">
+    Generate
+  </button>
+</mat-expansion-panel>
+
+<app-generate-new-form></app-generate-new-form>
 <mat-checkbox [(ngModel)]="showSolution">show solution</mat-checkbox>
-
-<hr>
-
-<button id="basic" type="button" mat-button (click)="startGenerate()">
-  Generate
-</button>
-<hr>
 
 <app-maze-display
   *ngIf="this.dataHolderService.maze"

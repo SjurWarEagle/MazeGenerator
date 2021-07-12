@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {MazeCell} from '../types/maze-cell';
 import {MazeHelperService} from './maze-helper.service';
 import {Maze} from '../types/maze';
+import {DataHolderService} from "./data-holder.service";
 
 @Injectable({
   providedIn: 'root'
@@ -9,12 +10,16 @@ import {Maze} from '../types/maze';
 export class MazeGeneratorFormsService {
   private cellStack: MazeCell[] = [];
 
-  constructor(private mazeHelperService: MazeHelperService) {
+  constructor(private mazeHelperService: MazeHelperService,
+              private dataHolderService: DataHolderService) {
   }
 
   public generateMaze(form: string[][]): Maze {
+    if (!form) {
+      return
+    }
     const maze: Maze = new Maze();
-    form = this.scaleUpForm(form, 2);
+    form = this.scaleUpForm(form, this.dataHolderService.formScale.value);
     this.mazeHelperService.initEmptyMazeArea(maze, form);
     const width = this.mazeHelperService.getWidthOfForm(form);
     const height = this.mazeHelperService.getHeightOfForm(form);

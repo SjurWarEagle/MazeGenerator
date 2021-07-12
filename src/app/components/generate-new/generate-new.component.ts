@@ -1,18 +1,19 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MazeGeneratorService} from "../../../services/maze-generator.service";
 import {DataHolderService} from "../../../services/data-holder.service";
 import {MazeGeneratorFormsService} from "../../../services/maze-generator-forms.service";
-import {split} from "lodash";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-generate-new',
   templateUrl: './generate-new.component.html',
   styleUrls: ['./generate-new.component.scss']
 })
-export class GenerateNewComponent implements OnInit {
+export class GenerateNewComponent implements OnInit, OnDestroy {
   public showSolution = false;
   public width = 20;
   public height = 20;
+  private formSub: Subscription;
 
   constructor(private mazeGeneratorService: MazeGeneratorService,
               private mazeGeneratorFormService: MazeGeneratorFormsService,
@@ -20,60 +21,26 @@ export class GenerateNewComponent implements OnInit {
   ) {
   }
 
+  public ngOnDestroy(): void {
+    if (this.formSub) {
+      this.formSub.unsubscribe();
+    }
+  }
+
   public ngOnInit(): void {
+    this.formSub = this.dataHolderService.form.subscribe(form => {
+      setTimeout(() => {
+        this.dataHolderService.maze = undefined;
+        this.dataHolderService.maze = this.mazeGeneratorFormService.generateMaze(form);
+      });
+    })
   }
 
   public startGenerate(): void {
     this.dataHolderService.maze = undefined;
     // using set timeout to trigger the change detection
     setTimeout(() => {
-      const form: string[][] = [];
-      // form.push(split("###", ''))
-      // form.push(split("B##", ''))
-      // form.push(split("  #", ''))
-      // form.push(split("##F", ''))
-      // form.push(split("##F", ''))
-
-      // form.push(split("#######################  ####                                    ",''))
-      // form.push(split("##B#################### ######                                   ",''))
-      // form.push(split("#######################  ####                                    ",''))
-      // form.push(split("#######################   #                                      ",''))
-      // form.push(split("######  #######  #################  ########       ###########   ",''))
-      // form.push(split("        #######        #######################   ############### ",''))
-      // form.push(split("        #######         ####################### #################",''))
-      // form.push(split("        #######         #########################################",''))
-      // form.push(split("        #######         ######  ######################     ######",''))
-      // form.push(split("        #######         ######  ######    ############     ######",''))
-      // form.push(split("        #######         ######  ######    ############     ######",''))
-      // form.push(split("        #######         ######  ######    ############     ######",''))
-      // form.push(split("      ###########      ######## ######    #######################",''))
-      // form.push(split("      ###########      ######## ######    #######################",''))
-      // form.push(split("      ###########      ######## ######    ###### ###########F### ",''))
-      // form.push(split("      ###########      ######## ######    ######   ###########   ",''))
-
-      form.push(split("########  ##############    #F# ", ''))
-      form.push(split("###   ### ###       #####   ### ", ''))
-      form.push(split("###   ##  ###       ######  ### ", ''))
-      form.push(split("B#######  #######   ####### ### ", ''))
-      form.push(split("###   #######       ### ####### ", ''))
-      form.push(split("###    ######       ###  ###### ", ''))
-      form.push(split("###   ### ###       ###   ##### ", ''))
-      form.push(split("########  #############    #### ", ''))
-
-
-      // form.push(split("########         ########    #######    ########## ", ''))
-      // form.push(split("###   ###       #########    ########   ###  ###   ", ''))
-      // form.push(split("###   ###      ##########    #########  ###  ###   ", ''))
-      // form.push(split("#B######      #### #################### ###  ###   ", ''))
-      // form.push(split("###   ####   ####  ######    ###### #######  ###   ", ''))
-      // form.push(split("###    ###  ####   ######    ######  ######  ###   ", ''))
-      // form.push(split("###   ###################    ######   #####  ###   ", ''))
-      // form.push(split("##############     ######    ######    ##########F ", ''))
-
-      // console.log('form', form);
-      this.dataHolderService.maze = this.mazeGeneratorFormService.generateMaze(form);
-      // console.log('this.dataHolderService.maze', this.dataHolderService.maze);
-      // this.dataHolderService.maze = this.mazeGeneratorService.generateMaze(this.width, this.height);
+      this.dataHolderService.maze = this.mazeGeneratorService.generateMaze(this.width, this.height);
     });
   }
 

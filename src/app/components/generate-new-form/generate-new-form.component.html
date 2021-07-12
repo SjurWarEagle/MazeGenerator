@@ -1,0 +1,31 @@
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <mat-icon>branding_watermark</mat-icon>
+      Labyrinth aus Form
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <mat-form-field appearance="fill" style="resize:both; width: 100%">
+    <mat-label>Textarea</mat-label>
+    <textarea #formStringTA matInput [(ngModel)]="formString"></textarea>
+  </mat-form-field>
+
+  <h4>Basic mat-select</h4>
+  <mat-form-field appearance="fill" >
+    <mat-label>Beispiele</mat-label>
+    <mat-select (selectionChange)="fillExample($event)">
+      <mat-option *ngFor="let example of examples" [value]="example.text">
+        {{example.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="example-form-field" appearance="fill">
+    <mat-label>Faktor</mat-label>
+    <input matInput type="number" min="0" max="10" [(ngModel)]="scaleFactor">
+  </mat-form-field>
+
+  <button id="withForm" type="button" mat-button (click)="startGenerateWithForm()">
+    Generate
+  </button>
+</mat-expansion-panel>
