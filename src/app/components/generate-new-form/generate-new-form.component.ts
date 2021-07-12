@@ -44,7 +44,7 @@ export class GenerateNewFormComponent implements OnInit {
       text:
         "  #B#     #F#\n" +
         " #####   #####\n" +
-        "###############\n" +
+        "####### #######\n" +
         "###############\n" +
         " #############\n" +
         " #############\n" +
@@ -56,7 +56,8 @@ export class GenerateNewFormComponent implements OnInit {
         "    #######\n" +
         "    #######\n" +
         "      ###\n"+
-        "      ###\n"
+        "      ###\n"+
+        "       #\n"
     }
   ];
 
@@ -73,8 +74,10 @@ export class GenerateNewFormComponent implements OnInit {
       form.push(split(line, ''));
     })
 
-    this.dataHolderService.formScale.next(undefined);
-    this.dataHolderService.formScale.next(this.scaleFactor);
+    if(this.dataHolderService.formScale.value!==this.scaleFactor){
+      this.dataHolderService.formScale.next(undefined);
+      this.dataHolderService.formScale.next(this.scaleFactor);
+    }
 
     this.dataHolderService.form.next(undefined);
     this.dataHolderService.form.next(form);
@@ -88,7 +91,7 @@ export class GenerateNewFormComponent implements OnInit {
     if (!event || !event.value) {
       return;
     }
-    this.formString = event.value;
+    this.formString = event.value.trimRight();
     this.formStringTA.nativeElement.rows = event.value.split('\n').length + 1;
   }
 

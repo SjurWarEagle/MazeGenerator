@@ -25,6 +25,8 @@
 <app-generate-new-form></app-generate-new-form>
 <mat-checkbox [(ngModel)]="showSolution">show solution</mat-checkbox>
 
+<br>
+
 <app-maze-display
   *ngIf="this.dataHolderService.maze"
   [maze]="dataHolderService.maze"

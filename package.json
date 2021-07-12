@@ -28,6 +28,7 @@
     "lodash": "4.17.21",
     "rxjs": "6.6.0",
     "tslib": "2.0.0",
+    "pixi.js": "6.0.4",
     "zone.js": "0.10.2"
   },
   "devDependencies": {

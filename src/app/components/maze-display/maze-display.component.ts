@@ -1,23 +1,26 @@
-import {Component, ElementRef, Input, AfterViewInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, NgZone, OnInit} from '@angular/core';
 import {MazeCell} from '../../../types/maze-cell';
 import {Maze} from '../../../types/maze';
 import {maxBy, minBy} from "lodash";
+import {Application, Graphics} from 'pixi.js';
 
 @Component({
   selector: 'app-maze-display',
   templateUrl: './maze-display.component.html',
   styleUrls: ['./maze-display.component.scss']
 })
-export class MazeDisplayComponent implements AfterViewInit {
-  // public cellWidth = 32;
+export class MazeDisplayComponent implements OnInit, AfterViewInit {
+  public app: Application;
+
   public cellWidth = 16;
-  private COLOR_BEGIN = 'red';
-  private COLOR_LOOT = 'orange';
-  private COLOR_FINISH = 'lightgreen';
-  private COLOR_SOLUTION = 'lightblue';
-  private COLOR_OTHER = 'brown';
-  private COLOR_BACKGROUND = 'darkgray';
-  private COLOR_NORMAL = 'white';
+  private COLOR_BEGIN = 0xFF0000;
+  private COLOR_LOOT = 0xFF00FF;
+  private COLOR_FINISH = 0x00FF00;
+  private COLOR_SOLUTION = 0x00BFFF;
+  private COLOR_OTHER = 0xFF5522;
+  private COLOR_BACKGROUND = 0xAAAAAA;
+  private COLOR_NORMAL = 0xFFFFFF;
+
   // private COLOR_NORMAL = 'lightgray';
 
   @Input()
@@ -29,6 +32,7 @@ export class MazeDisplayComponent implements AfterViewInit {
     const maxY = maxBy(maze.cells, (cell) => cell.y)!.y;
     this.width = Math.abs(minX - maxX) + 1;
     this.height = Math.abs(minY - maxY) + 1;
+    this.app = new Application({width: this.width * this.cellWidth, height: this.height * this.cellWidth});
   }
 
   public width = 1;
@@ -37,44 +41,46 @@ export class MazeDisplayComponent implements AfterViewInit {
 
   @Input()
   set showSolution(state: boolean) {
-    this.localShowSolution = state;
-    this.drawMaze();
+    if (this.localShowSolution !== state) {
+      this.localShowSolution = state;
+      this.drawMaze();
+    }
   }
 
   public localShowSolution = true;
 
-  @ViewChild('mazearea', {static: true})
-  // @ts-ignore
-  public mazeArea: ElementRef<HTMLCanvasElement>;
-
   // @ts-ignore
   public context: CanvasRenderingContext2D | null;
 
-  constructor() {
+  constructor(private elementRef: ElementRef, private ngZone: NgZone) {
   }
 
-  private drawWall(cell: MazeCell, ctx: CanvasRenderingContext2D): void {
-    ctx.fillStyle = 'black';
+  private drawWall(cell: MazeCell): void {
+    if (cell.background) {
+      return;
+    }
+    let line = new Graphics();
+    line.lineStyle(2, 0x334455, 1)
     if (cell.walls[0]) {
-      ctx.moveTo(cell.x * this.cellWidth, cell.y * this.cellWidth);
-      ctx.lineTo((cell.x + 1) * this.cellWidth, cell.y * this.cellWidth);
+      line.moveTo(cell.x * this.cellWidth, cell.y * this.cellWidth);
+      line.lineTo((cell.x + 1) * this.cellWidth, cell.y * this.cellWidth);
     }
     if (cell.walls[1]) {
-      ctx.moveTo((cell.x + 1) * this.cellWidth, cell.y * this.cellWidth);
-      ctx.lineTo((cell.x + 1) * this.cellWidth, (cell.y + 1) * this.cellWidth);
+      line.moveTo((cell.x + 1) * this.cellWidth, cell.y * this.cellWidth);
+      line.lineTo((cell.x + 1) * this.cellWidth, (cell.y + 1) * this.cellWidth);
     }
     if (cell.walls[2]) {
-      ctx.moveTo((cell.x) * this.cellWidth, (cell.y + 1) * this.cellWidth);
-      ctx.lineTo((cell.x + 1) * this.cellWidth, (cell.y + 1) * this.cellWidth);
+      line.moveTo((cell.x) * this.cellWidth, (cell.y + 1) * this.cellWidth);
+      line.lineTo((cell.x + 1) * this.cellWidth, (cell.y + 1) * this.cellWidth);
     }
     if (cell.walls[3]) {
-      ctx.moveTo(cell.x * this.cellWidth, (cell.y) * this.cellWidth);
-      ctx.lineTo(cell.x * this.cellWidth, (cell.y + 1) * this.cellWidth);
+      line.moveTo(cell.x * this.cellWidth, (cell.y) * this.cellWidth);
+      line.lineTo(cell.x * this.cellWidth, (cell.y + 1) * this.cellWidth);
     }
-    ctx.stroke();
+    this.app.stage.addChild(line);
   }
 
-  private drawSpecialField(cell: MazeCell, ctx: CanvasRenderingContext2D): void {
+  private drawSpecialField(cell: MazeCell): void {
     if (!this.localMaze) {
       return;
     }
@@ -83,42 +89,43 @@ export class MazeDisplayComponent implements AfterViewInit {
     const isPartOfWayToExit = this.localMaze.wayToExit.find(pos => cell.x === pos.x && cell.y === pos.y) !== undefined;
     const isLoot = this.localMaze.loot.find(pos => cell.x === pos.x && cell.y === pos.y) !== undefined;
 
-    if (isFinish) {
-      ctx.fillStyle = this.COLOR_FINISH;
-    } else if (isLoot) {
-      ctx.fillStyle = this.COLOR_LOOT;
-    } else if (isBegin) {
-      ctx.fillStyle = this.COLOR_BEGIN;
-    } else if (isPartOfWayToExit && this.localShowSolution) {
-      ctx.fillStyle = this.COLOR_SOLUTION;
-    } else if (cell.visited) {
-      ctx.fillStyle = this.COLOR_NORMAL;
-    } else if (cell.background) {
-      ctx.fillStyle = this.COLOR_BACKGROUND;
-    } else {
-      // console.log('cell',cell);
-      ctx.fillStyle = this.COLOR_OTHER;
-    }
-    ctx.fillRect(cell.x * this.cellWidth, cell.y * this.cellWidth, this.cellWidth, this.cellWidth);
-  }
 
+    const field = new Graphics();
+    if (isFinish) {
+      field.beginFill(this.COLOR_FINISH);
+    } else if (isLoot) {
+      field.beginFill(this.COLOR_LOOT);
+    } else if (isBegin) {
+      field.beginFill(this.COLOR_BEGIN);
+    } else if (isPartOfWayToExit && this.localShowSolution) {
+      field.beginFill(this.COLOR_SOLUTION);
+    } else if (cell.visited) {
+      field.beginFill(this.COLOR_NORMAL);
+    } else if (cell.background) {
+      field.beginFill(this.COLOR_BACKGROUND);
+    } else {
+      field.beginFill(this.COLOR_OTHER);
+    }
+    field.drawRect(cell.x * this.cellWidth, cell.y * this.cellWidth, this.cellWidth, this.cellWidth);
+    this.app.stage.addChild(field);
+  }
 
   public drawMaze(): void {
-
-    const ctx = this.mazeArea.nativeElement.getContext('2d');
-    if (!ctx) {
-      throw new Error('Problem with ctx==null');
-    }
-
     for (const cellsToRedrawItem of this.localMaze.cells) {
-      this.drawSpecialField(cellsToRedrawItem, ctx);
-      this.drawWall(cellsToRedrawItem, ctx);
+      this.drawSpecialField(cellsToRedrawItem);
+      this.drawWall(cellsToRedrawItem);
     }
   }
 
-  // @ts-ignore
-  public ngAfterViewInit(): void {
-    this.drawMaze();
+  ngOnInit(): void {
+    this.ngZone.runOutsideAngular(() => {
+      this.elementRef.nativeElement.appendChild(this.app.view);
+    });
+  }
 
+  ngAfterViewInit(): void {
+    setTimeout(()=>{
+      this.drawMaze();
+    })
   }
 }
