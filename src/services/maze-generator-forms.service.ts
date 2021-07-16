@@ -1,18 +1,19 @@
-import {Injectable} from '@angular/core';
-import {MazeCell} from '../types/maze-cell';
-import {MazeHelperService} from './maze-helper.service';
-import {Maze} from '../types/maze';
-import {DataHolderService} from './data-holder.service';
+import { Injectable } from '@angular/core';
+import { MazeCell } from '../types/maze-cell';
+import { MazeHelperService } from './maze-helper.service';
+import { Maze } from '../types/maze';
+import { DataHolderService } from './data-holder.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MazeGeneratorFormsService {
   private cellStack: MazeCell[] = [];
 
-  constructor(private mazeHelperService: MazeHelperService,
-              private dataHolderService: DataHolderService) {
-  }
+  constructor(
+    private mazeHelperService: MazeHelperService,
+    private dataHolderService: DataHolderService
+  ) {}
 
   public generateMaze(form: string[][]): Maze {
     if (!form) {
@@ -89,7 +90,7 @@ export class MazeGeneratorFormsService {
   private storeWayToExit(maze: Maze, currentCell: MazeCell): void {
     if (currentCell.x === maze.finish.x && currentCell.y === maze.finish.y) {
       maze.wayToExit = [];
-      this.cellStack.forEach(value => {
+      this.cellStack.forEach((value) => {
         // if (!maze.wayToExit.find(value1 => value1.x==value.x&&value1.y==value.y)){
         maze.wayToExit.push(value);
         // }
@@ -104,7 +105,12 @@ export class MazeGeneratorFormsService {
       this.storeWayToExit(maze, currentCell);
       // console.log('width',width );
       // console.log('height',height );
-      const selectedTarget = this.getRandomNeighbour(currentCell, maze, width, height);
+      const selectedTarget = this.getRandomNeighbour(
+        currentCell,
+        maze,
+        width,
+        height
+      );
       // console.log('selectedTarget',selectedTarget );
 
       if (selectedTarget) {
@@ -121,8 +127,18 @@ export class MazeGeneratorFormsService {
     }
   }
 
-  private getRandomNeighbour(currentCell: MazeCell, maze: Maze, width: number, height: number): MazeCell {
-    const directions = this.mazeHelperService.findPossibleDirections(currentCell, maze, width, height);
+  private getRandomNeighbour(
+    currentCell: MazeCell,
+    maze: Maze,
+    width: number,
+    height: number
+  ): MazeCell {
+    const directions = this.mazeHelperService.findPossibleDirections(
+      currentCell,
+      maze,
+      width,
+      height
+    );
     // console.log('currentCell',currentCell);
     // console.log('directions',directions);
 
@@ -131,7 +147,6 @@ export class MazeGeneratorFormsService {
   }
 
   removeWalls(currentCell: MazeCell, targetCell: MazeCell): void {
-
     if (currentCell.x < targetCell.x) {
       currentCell.walls[1] = false;
       targetCell.walls[3] = false;
@@ -149,5 +164,4 @@ export class MazeGeneratorFormsService {
       targetCell.walls[2] = false;
     }
   }
-
 }

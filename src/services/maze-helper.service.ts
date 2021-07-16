@@ -1,22 +1,24 @@
-import {Injectable} from '@angular/core';
-import {MazeCell} from '../types/maze-cell';
-import {Maze} from '../types/maze';
+import { Injectable } from '@angular/core';
+import { MazeCell } from '../types/maze-cell';
+import { Maze } from '../types/maze';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MazeHelperService {
+  constructor() {}
 
-  constructor() {
-  }
-
-  public initEmptySquareMazeArea(maze: Maze, width: number, height: number): void {
+  public initEmptySquareMazeArea(
+    maze: Maze,
+    width: number,
+    height: number
+  ): void {
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         maze.cells.push(new MazeCell(x, y));
       }
     }
-    const cell = maze.cells.find(value => value.x === 0 && value.y === 0);
+    const cell = maze.cells.find((value) => value.x === 0 && value.y === 0);
     if (!cell) {
       throw new Error('No Start found');
     }
@@ -41,7 +43,12 @@ export class MazeHelperService {
     }
   }
 
-  public findPossibleDirections(currentCell: MazeCell, maze: Maze, width: number, height: number): MazeCell[] {
+  public findPossibleDirections(
+    currentCell: MazeCell,
+    maze: Maze,
+    width: number,
+    height: number
+  ): MazeCell[] {
     const rc: MazeCell[] = [];
 
     let index = this.getIndex(currentCell.x + 1, currentCell.y, width, height);
@@ -68,10 +75,20 @@ export class MazeHelperService {
   }
 
   private isValidCell(index: number, maze: Maze): boolean {
-    return index && maze.cells[index] && !maze.cells[index].visited && !maze.cells[index].background;
+    return (
+      index &&
+      maze.cells[index] &&
+      !maze.cells[index].visited &&
+      !maze.cells[index].background
+    );
   }
 
-  public getIndex(x: number, y: number, width: number, height: number): number | undefined {
+  public getIndex(
+    x: number,
+    y: number,
+    width: number,
+    height: number
+  ): number | undefined {
     if (x < 0 || y < 0 || x >= width || y >= height) {
       return undefined;
     }
@@ -82,7 +99,7 @@ export class MazeHelperService {
     let rc = 0;
 
     for (const row of form) {
-      if ((row.length) > rc) {
+      if (row.length > rc) {
         rc = row.length;
       }
     }
@@ -101,8 +118,11 @@ export class MazeHelperService {
     return this.getPosOfSpecial(form, 'F');
   }
 
-  private getPosOfSpecial(form: string[][], char: string): { x: number; y: number } {
-    const rc: { x: number, y: number } = {x: 0, y: 0};
+  private getPosOfSpecial(
+    form: string[][],
+    char: string
+  ): { x: number; y: number } {
+    const rc: { x: number; y: number } = { x: 0, y: 0 };
 
     for (let y = 0; y < form.length; y++) {
       const row = form[y];

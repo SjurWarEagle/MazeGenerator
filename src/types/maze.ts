@@ -1,5 +1,5 @@
-import {MazeCell} from './maze-cell';
-import {MazeLoot} from './maze-loot';
+import { MazeCell } from './maze-cell';
+import { MazeLoot } from './maze-loot';
 
 export class Maze {
   public cells: MazeCell[] = [];

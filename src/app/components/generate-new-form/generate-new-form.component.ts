@@ -1,11 +1,11 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {split} from 'lodash';
-import {DataHolderService} from '../../../services/data-holder.service';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { split } from 'lodash';
+import { DataHolderService } from '../../../services/data-holder.service';
 
 @Component({
   selector: 'app-generate-new-form',
   templateUrl: './generate-new-form.component.html',
-  styleUrls: ['./generate-new-form.component.scss']
+  styleUrls: ['./generate-new-form.component.scss'],
 })
 export class GenerateNewFormComponent implements OnInit {
   @ViewChild('formStringTA')
@@ -17,15 +17,11 @@ export class GenerateNewFormComponent implements OnInit {
   public examples = [
     {
       name: 'Leer',
-      text:
-        '',
+      text: '',
     },
     {
       name: 'Klein',
-      text:
-        'B##\n' +
-        '###\n' +
-        '##F\n'
+      text: 'B##\n' + '###\n' + '##F\n',
     },
     {
       name: 'Ben',
@@ -57,20 +53,18 @@ export class GenerateNewFormComponent implements OnInit {
         '    #######\n' +
         '      ###\n' +
         '      ###\n' +
-        '       #\n'
-    }
+        '       #\n',
+    },
   ];
 
-  constructor(public dataHolderService: DataHolderService) {
-  }
+  constructor(public dataHolderService: DataHolderService) {}
 
-  public ngOnInit(): void {
-  }
+  public ngOnInit(): void {}
 
   public startGenerateWithForm(): void {
     // using set timeout to trigger the change detection
     const form: string[][] = [];
-    this.formString.split('\n').forEach(line => {
+    this.formString.split('\n').forEach((line) => {
       form.push(split(line, ''));
     });
 
@@ -86,7 +80,6 @@ export class GenerateNewFormComponent implements OnInit {
     // this.dataHolderService.maze = this.mazeGeneratorService.generateMaze(this.width, this.height);
   }
 
-
   public fillExample(event): void {
     if (!event || !event.value) {
       return;
@@ -94,6 +87,4 @@ export class GenerateNewFormComponent implements OnInit {
     this.formString = event.value.trimRight();
     this.formStringTA.nativeElement.rows = event.value.split('\n').length + 1;
   }
-
-
 }

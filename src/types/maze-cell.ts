@@ -3,8 +3,5 @@ export class MazeCell {
   public background = false;
   public walls: boolean[] = [true, true, true, true];
 
-  constructor(public x: number, public y: number) {
-  }
-
-
+  constructor(public x: number, public y: number) {}
 }
