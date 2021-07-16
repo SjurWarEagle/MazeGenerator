@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {split} from "lodash";
-import {DataHolderService} from "../../../services/data-holder.service";
+import {split} from 'lodash';
+import {DataHolderService} from '../../../services/data-holder.service';
 
 @Component({
   selector: 'app-generate-new-form',
@@ -8,7 +8,7 @@ import {DataHolderService} from "../../../services/data-holder.service";
   styleUrls: ['./generate-new-form.component.scss']
 })
 export class GenerateNewFormComponent implements OnInit {
-  @ViewChild("formStringTA")
+  @ViewChild('formStringTA')
   public formStringTA: ElementRef;
 
   public scaleFactor = 2;
@@ -18,46 +18,46 @@ export class GenerateNewFormComponent implements OnInit {
     {
       name: 'Leer',
       text:
-        "",
+        '',
     },
     {
       name: 'Klein',
       text:
-        "B##\n" +
-        "###\n" +
-        "##F\n"
+        'B##\n' +
+        '###\n' +
+        '##F\n'
     },
     {
       name: 'Ben',
       text:
-        "########  ##############    #F#\n" +
-        "###   ### ###       #####   ###\n" +
-        "###   ##  ###       ######  ###\n" +
-        "B#######  #######   ####### ###\n" +
-        "###   #######       ### #######\n" +
-        "###    ######       ###  ######\n" +
-        "###   ### ###       ###   #####\n" +
-        "########  #############    ####\n",
+        '########  ##############    #F#\n' +
+        '###   ### ###       #####   ###\n' +
+        '###   ##  ###       ######  ###\n' +
+        'B#######  #######   ####### ###\n' +
+        '###   #######       ### #######\n' +
+        '###    ######       ###  ######\n' +
+        '###   ### ###       ###   #####\n' +
+        '########  #############    ####\n',
     },
     {
       name: 'Herz',
       text:
-        "  #B#     #F#\n" +
-        " #####   #####\n" +
-        "####### #######\n" +
-        "###############\n" +
-        " #############\n" +
-        " #############\n" +
-        " #############\n" +
-        "  ###########\n" +
-        "  ###########\n" +
-        "  ###########\n" +
-        "    #######\n" +
-        "    #######\n" +
-        "    #######\n" +
-        "      ###\n"+
-        "      ###\n"+
-        "       #\n"
+        '  #B#     #F#\n' +
+        ' #####   #####\n' +
+        '####### #######\n' +
+        '###############\n' +
+        ' #############\n' +
+        ' #############\n' +
+        ' #############\n' +
+        '  ###########\n' +
+        '  ###########\n' +
+        '  ###########\n' +
+        '    #######\n' +
+        '    #######\n' +
+        '    #######\n' +
+        '      ###\n' +
+        '      ###\n' +
+        '       #\n'
     }
   ];
 
@@ -72,9 +72,9 @@ export class GenerateNewFormComponent implements OnInit {
     const form: string[][] = [];
     this.formString.split('\n').forEach(line => {
       form.push(split(line, ''));
-    })
+    });
 
-    if(this.dataHolderService.formScale.value!==this.scaleFactor){
+    if (this.dataHolderService.formScale.value !== this.scaleFactor) {
       this.dataHolderService.formScale.next(undefined);
       this.dataHolderService.formScale.next(this.scaleFactor);
     }

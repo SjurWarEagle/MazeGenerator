@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MazeGeneratorService} from "../../../services/maze-generator.service";
-import {DataHolderService} from "../../../services/data-holder.service";
-import {MazeGeneratorFormsService} from "../../../services/maze-generator-forms.service";
-import {Subscription} from "rxjs";
+import {MazeGeneratorService} from '../../../services/maze-generator.service';
+import {DataHolderService} from '../../../services/data-holder.service';
+import {MazeGeneratorFormsService} from '../../../services/maze-generator-forms.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-generate-new',
@@ -33,7 +33,7 @@ export class GenerateNewComponent implements OnInit, OnDestroy {
         this.dataHolderService.maze = undefined;
         this.dataHolderService.maze = this.mazeGeneratorFormService.generateMaze(form);
       });
-    })
+    });
   }
 
   public startGenerate(): void {

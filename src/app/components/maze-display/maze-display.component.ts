@@ -1,7 +1,7 @@
 import {Component, ElementRef, Input, NgZone, OnInit} from '@angular/core';
 import {MazeCell} from '../../../types/maze-cell';
 import {Maze} from '../../../types/maze';
-import {maxBy, minBy} from "lodash";
+import {maxBy, minBy} from 'lodash';
 import {Application, Graphics} from 'pixi.js';
 
 @Component({
@@ -54,8 +54,9 @@ export class MazeDisplayComponent implements OnInit {
     if (cell.background) {
       return;
     }
-    let line = new Graphics();
-    line.lineStyle(2, 0x334455, 1)
+    const line = new Graphics();
+    line.lineStyle(2, 0x334455, 1);
+
     if (cell.walls[0]) {
       line.moveTo(cell.x * this.cellWidth, cell.y * this.cellWidth);
       line.lineTo((cell.x + 1) * this.cellWidth, cell.y * this.cellWidth);

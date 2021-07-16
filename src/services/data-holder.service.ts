@@ -1,15 +1,16 @@
-import { Injectable } from '@angular/core';
-import {Maze} from "../types/maze";
-import {BehaviorSubject, Subject} from "rxjs";
+import {Injectable} from '@angular/core';
+import {Maze} from '../types/maze';
+import {BehaviorSubject, Subject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataHolderService {
   maze: Maze;
-  showSolution: boolean= false;
-  form: Subject<string[][]>= new Subject<string[][]>();
-  formScale: BehaviorSubject<number>= new BehaviorSubject<number>(2);
+  showSolution = false;
+  form: Subject<string[][]> = new Subject<string[][]>();
+  formScale: BehaviorSubject<number> = new BehaviorSubject<number>(2);
 
-  constructor() { }
+  constructor() {
+  }
 }

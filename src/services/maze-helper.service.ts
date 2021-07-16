@@ -79,10 +79,9 @@ export class MazeHelperService {
   }
 
   public getWidthOfForm(form: string[][]): number {
-    let rc = 0
+    let rc = 0;
 
-    for (let x = 0; x < form.length; x++) {
-      const row = form[x];
+    for (const row of form) {
       if ((row.length) > rc) {
         rc = row.length;
       }

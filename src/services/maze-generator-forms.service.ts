@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {MazeCell} from '../types/maze-cell';
 import {MazeHelperService} from './maze-helper.service';
 import {Maze} from '../types/maze';
-import {DataHolderService} from "./data-holder.service";
+import {DataHolderService} from './data-holder.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,7 @@ export class MazeGeneratorFormsService {
 
   public generateMaze(form: string[][]): Maze {
     if (!form) {
-      return
+      return;
     }
     const maze: Maze = new Maze();
     form = this.scaleUpForm(form, this.dataHolderService.formScale.value);
@@ -36,16 +36,14 @@ export class MazeGeneratorFormsService {
   private scaleUpForm(form: string[][], scale: number): string[][] {
     const rc: string[][] = [];
 
-    for (let y = 0; y < form.length; y++) {
-      const orgRow = form[y];
-      let rows = [];
+    for (const orgRow of form) {
+      const rows = [];
       for (let i = 0; i < scale; i++) {
         rows.push([]);
       }
 
       for (let c = 0; c < scale; c++) {
-        for (let x = 0; x < orgRow.length; x++) {
-          const currentField = orgRow[x];
+        for (const currentField of orgRow) {
           if (currentField === 'B') {
             rows[c].push('B');
             for (let c2 = 0; c2 < scale - 1; c2++) {
@@ -72,7 +70,7 @@ export class MazeGeneratorFormsService {
     return rc;
   }
 
-  private fillBegin(form: string[][], maze: Maze) {
+  private fillBegin(form: string[][], maze: Maze): void {
     const begin = this.mazeHelperService.getBegin(form);
     maze.begin = new MazeCell(begin.x, begin.y);
     if (!maze.begin) {
@@ -80,7 +78,7 @@ export class MazeGeneratorFormsService {
     }
   }
 
-  private fillFinish(form: string[][], maze: Maze) {
+  private fillFinish(form: string[][], maze: Maze): void {
     const finish = this.mazeHelperService.getFinish(form);
     maze.finish = new MazeCell(finish.x, finish.y);
     if (!maze.finish) {
